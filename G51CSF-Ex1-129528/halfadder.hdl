@@ -1,0 +1,12 @@
+
+
+CHIP halfadder {
+    IN a, b;    // 1-bit inputs
+    OUT sum,    // Right bit of a + b 
+        carry;  // Left bit of a + b
+
+    PARTS:
+    // Coding for halfadder:
+	Xor (a=a , b=b , out=sum); //exclusive or gate for sum
+	and (a=a,b=b , out=carry); //and gate for carry
+}

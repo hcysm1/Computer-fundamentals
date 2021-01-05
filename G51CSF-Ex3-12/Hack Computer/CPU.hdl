@@ -1,0 +1,99 @@
+CHIP CPU {
+
+    IN  inM[16],         // M value input  (M = contents of RAM[A])
+        instruction[16], // Instruction for execution
+        reset;           // Signals whether to re-start the current program
+                         // (reset == 1) or continue executing the current
+                         // program (reset == 0).
+
+    OUT outM[16],        // M value output
+        writeM,          // Write into M? 
+        addressM[15],    // RAM address (of M)
+        pc[15];          // ROM address (of next instruction)
+    
+	// implementation for cpu
+    PARTS:
+      //decoding instructions                                // if 0 then A instruction if 1 then C instruction.
+    Not(in=instruction[15], out=Ainstruction);               //getting A instruction
+    Not(in=Ainstruction, out=Cinstruction);                  //getting C instruction
+    
+	//using mux gate to choose whether to take input directly from instructions or from the output of ALU.
+	//if it is A instruction and the destination is Register A it will take the value directly from instructions.
+	//and if it is C instruction and destination is Register A it will take value from output of Alu.
+	
+	Mux16(a=instruction, b=ALUoutput, sel=ALUtoRegisterA, out=Aregisterin); 
+	
+	//if it is C instruction and destination is A register we can see that for this d1 is always 1 i.e instruction[5]
+	//only then it will load to register A.
+	And(a=Cinstruction, b=instruction[5], out=ALUtoRegisterA);   
+    
+	//if it is A instruction it will directly load in register A
+    Or(a=Ainstruction, b=ALUtoRegisterA, out=loadRegisterA); 
+	ARegister(in=Aregisterin, load=loadRegisterA, out[0..14]=addressM ,out=RegisterAout);
+	
+	// we will use mux gate to choose either to get input from memory or registerA
+	// we see that it depends on the a bit if it is 0 we will take from register 
+	//if a=1 then we will take from memory i.e instruction[12].
+    Mux16(a=RegisterAout, b=inM, sel=instruction[12], out=AorMout);
+	
+   
+    // if it is C instruction and Destination is D Register you see that for this d2 is always 1 i.e instruction [4]
+	//if both conditions are satisfied only then you will invoke D 
+    And(a=Cinstruction, b=instruction[4], out=loadRegisterD);
+	
+	// and load the D register from ALUoutput
+    DRegister(in=ALUoutput, load=loadRegisterD, out=RegisterDout);    
+
+	
+	
+	//for Alu we see we have 2 input pins x or y x will be the register D output and y will be either takig from 
+	//memory or register depends on a bit.
+	//then we have all the instructions for the selectors
+	//& after the computations it depends what will b the output.
+	ALU(x=RegisterDout, y=AorMout, 
+    zx=instruction[11],
+    nx=instruction[10], 
+    zy=instruction[9], 
+    ny=instruction[8], 
+    f=instruction[7],
+    no=instruction[6], 
+    out=ALUoutput,out=outM, zr=zroutput, ng=ngoutput);
+        
+    //if C instruction and we see that where ever there is M means memory d3 is always 1
+	//i.e instruction[3] if both conditions are satisfies means if it is C instruction and d3 is 1
+	//then write to memory.
+    And(a=Cinstruction, b=instruction[3], out=writeM);
+    
+    // calculate PCload & PCincrement whether to load PC with A register or not.
+	//for jump if equal we see that if only j2 that is instruction[1] is 1 and rest is zero then jump so
+    And(a=zroutput, b=instruction[1], out=jeq);
+   
+    //for jump if less than we see only j1=1 i.e instruction[2] and <0 means set ng then jump so
+    And(a=ngoutput, b=instruction[2], out=jlt);  
+    
+	//we will use or gate to check if we have condition that is zero or negative 
+	Or(a=zroutput, b=ngoutput, out=zrorng);
+   
+    //and we will invert the output to get the condition if it is not zero or negative but positive.
+    Not(in=zrorng, out=positive);   
+
+	//we did this to get positive because for jump if greater than the conditions are j3=1 means instruction[0] 
+	//and if >0 means any positive value then jump so
+    And(a=positive, b=instruction[0], out=jgt); 
+	
+	//if both j1=1 and j2=1 then jump so we will take jeq and jlt as inputs to get jump if less than equal to
+    Or(a=jeq, b=jlt, out=jle);
+	
+	//if all the conditions met then jump
+    Or(a=jle, b=jgt, out=jumpToA); 
+	
+	//if it is C instruction and all the conditions are true then load PC 
+    And(a=Cinstruction, b=jumpToA, out=PCload); 
+    
+	//if not all the conditions are fulfilled then increment the PC
+	Not(in=PCload, out=PCincrement);            
+	
+	//if all the conditions are true and if jump 
+	//then feed to program counter from register A otherwise increment
+    PC(in=RegisterAout, inc=PCincrement, load=PCload, reset=reset, out[0..14]=pc);
+}

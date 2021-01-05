@@ -1,0 +1,10 @@
+
+CHIP Bit {
+    IN in, load;
+    OUT out;
+
+    PARTS:
+    // Coding for Bit:
+	Mux (a=output1 ,b=in , sel=load , out=output2); // output1 is the output of DFF
+	DFF(in=output2 , out=output1 , out=out); //output2 is the output of mux 
+}

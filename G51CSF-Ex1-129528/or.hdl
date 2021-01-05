@@ -1,0 +1,13 @@
+
+
+CHIP or {
+    IN a, b;
+    OUT out;
+
+    PARTS:
+    // CODING for OR from Nand 
+	Nand ( a=a , b=a , out= c1);
+	Nand ( a=b , b=b , out = c2);
+	Nand ( a=c1 , b=c2 , out=out ); //OR gate implementation
+	
+}

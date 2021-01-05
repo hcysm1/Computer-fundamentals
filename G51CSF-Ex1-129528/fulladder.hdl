@@ -1,0 +1,15 @@
+
+
+CHIP fulladder {
+    IN a, b, c;  // 1-bit inputs
+    OUT sum,     // Right bit of a + b + c
+        carry;   // Left bit of a + b + c
+
+    PARTS:
+    // Coding for Fulladder:
+	halfadder (a=a,b=b,sum=firsthalfsum , carry=firsthalfcarry); //halfadder1
+	halfadder (a=c , b=firsthalfsum , sum=sum , carry = secondhalfcarry); //halfadder2
+	or (a=firsthalfcarry , b=secondhalfcarry , out=carry);
+	
+	
+}

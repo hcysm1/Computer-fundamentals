@@ -1,0 +1,10 @@
+
+
+CHIP not {
+    IN in;
+    OUT out;
+
+    PARTS:
+    // CODING for NOT from NAND
+	Nand ( a= in, b=in , out=out ); // Not gate implementation
+}

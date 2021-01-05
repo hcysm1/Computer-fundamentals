@@ -1,0 +1,11 @@
+
+
+CHIP and {
+    IN a, b;
+    OUT out;
+
+    PARTS:
+    // CODING for And from Nand 
+	Nand ( a=a , b=b , out=c );
+	Nand ( a=c , b=c , out=out ); // And gate implementation
+}

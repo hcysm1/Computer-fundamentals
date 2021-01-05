@@ -1,0 +1,16 @@
+
+
+CHIP DMux8Way {
+    IN in, sel[3];  //using 3 selectors because its 8 way so 2^3=8
+    OUT a, b, c, d, e, f, g, h;
+
+    PARTS:
+    
+	
+	// Coding for DMux8Way:
+	
+	
+	DMux(in=in, sel=sel[2], a=out1, b=out2); //using dmux to get two outputs 
+    DMux4Way(in=out1, sel[0]=sel[0], sel[1]=sel[1], a=a, b=b, c=c, d=d); //using dmux4way to get 4 outputs by taking out1 in
+    DMux4Way(in=out2, sel[0]=sel[0], sel[1]=sel[1], a=e, b=f, c=g, d=h); //using dmux4way to get 4 outputs by taking out2 in
+}

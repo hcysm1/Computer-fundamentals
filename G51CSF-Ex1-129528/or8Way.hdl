@@ -1,0 +1,17 @@
+
+CHIP or8Way {
+    IN in[8];
+    OUT out;
+
+    PARTS:
+    // Coding for Or8Way:
+	
+	or (a=in[0] , b=in[1] , out=t1);
+	or (a=in[2] , b=in[3] , out=t2);
+	or (a=in[4] , b=in[5] , out=t3);
+	or (a=in[6] , b=in[7] , out=t4);
+	or (a=t1 , b=t2 , out=t5);
+	or (a=t3 , b=t4 , out=t6);
+	or (a=t5 , b=t6 , out=out);
+	
+}

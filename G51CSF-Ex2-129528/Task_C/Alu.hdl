@@ -1,0 +1,56 @@
+
+
+
+
+
+CHIP Alu {
+    IN  
+        x[16], y[16],  // 16-bit inputs        
+        zx, // zero the x input?
+        nx, // negate the x input?
+        zy, // zero the y input?
+        ny, // negate the y input?
+        f,  // compute out = x + y (if 1) or x & y (if 0)
+        no; // negate the out output?
+
+    OUT 
+        out[16], // 16-bit output
+        zr, // 1 if (out == 0), 0 otherwise
+        ng; // 1 if (out < 0),  0 otherwise
+
+    PARTS:
+   // Coding for ALU:
+   
+    Mux16(a=x, b=false, sel=zx, out=x1);          //for zx column
+    
+	Mux16(a=y, b=false, sel=zy, out=y1);          //for zy column
+	
+	Not16(in=x1, out=notx1);                      //not gate to invert x1
+    Mux16(a=x1, b=notx1, sel=nx, out=x2);         //for nx cloumn
+    
+	Not16(in=y1, out=noty1);                      //not gate to invert y1
+    Mux16(a=y1, b=noty1, sel=ny, out=y2);         //for ny column
+	
+	And16(a=x2, b=y2, out=xANDy);                  //using And gate for f column. x&y
+    Add16(a=x2, b=y2, out=xADDy);                  //using Adder to add x+y for f column
+    Mux16(a=xANDy, b=xADDy, sel=f, out=xy);        //again using mux gate because having 2 outputs and we want one.
+	
+	Not16(in=xy, out=notxy);                        //again inverting the output
+	Mux16(a=xy ,b=notxy , sel=no, out[15]=ng, out[0..7]=half1, out[8..15]=half2, out=out);    //because 16 inputs we will use 2 or8wayzz
+
+    
+    Or8Way(in=half1, out=or8way1); //or8way 1
+    Or8Way(in=half2, out=or8way2);  //or8way 2
+	Or(a=or8way1, b=or8way2, out=nonzero);           // checking if any digits are nonzero
+	Not(in=nonzero, out=zr);                         //inverting the output making it zero because if out==0 need to set zr
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+}

@@ -1,0 +1,15 @@
+
+
+CHIP Mux {
+    IN a, b, sel;
+    OUT out;
+
+    PARTS:
+    //Coding for MUX:
+	
+	Not (in=sel , out=output1);   //to invert the output     
+	And (a=b , b=sel ,out=output2); //getting one output from here
+	And (a=a , b=output1 , out=output3); //getting another output from here
+	Or (a=output2 , b=output3 , out=out); //using or gate to select one output
+
+}

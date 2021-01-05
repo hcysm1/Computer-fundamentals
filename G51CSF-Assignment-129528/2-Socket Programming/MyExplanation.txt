@@ -1,0 +1,23 @@
+The parameters needed by puttytel to establish a proper
+connection are : 
+1- localhost or 127.0.0.1 which is the IP loopback address because we need an IP address of the server to which we want to connect. 
+2- 8989 which is the port number of the server because we need to specify which port number we need to connect to.
+
+Functions used in server are as follows:
+1- first of all we will initialize winSock because windows use dynamically linked libraries so we need to startup the winSock.
+   It allows an application or DLL to specify the version of Windows Sockets required and retrieve details of the specific Windows Sockets implementation.
+2- After initializing WinSock we will create Socket.The socket() function creates an unbound socket in a communications domain
+   and return a file descriptor that can be used in later function calls that operate on sockets.
+3- After creation of the socket. we will use bind function which is used to bind the socket to the address and port number specified
+   in addr(custom data structure).
+4- After that we need to make it a listening socket.It puts the server socket in a passive mode. where it waits for the client to 
+   approach the server to make a connection. 
+5- Then accept function is used to accept the connection from client It extracts the first connection request on the queue of pending 
+   connections for the listening socket which creates a new connected socket, and returns a new file descriptor referring to that socket.
+   At this point, connection is established between client and server, and they are ready to transfer data.
+6- Then receive function is used to get request from client.
+7- Then Send function is used to send back the response to client.
+8- Then close function is used to close the socket.
+9- To reset and automatically deallocate the socket we call WSAcleanup.
+
+

@@ -1,0 +1,38 @@
+
+
+CHIP Computer {
+
+    IN reset;
+    PARTS:
+    //Coding for computer.
+    
+	//ROM has address and out pin. the addresses are stored to the program counter as we know PC tells the address of the next
+	//instruction from where to start the execution so address=PC and out will be the instruction fetched by its address which was 
+	// stored in PC. also it checks whether reset=0 or 1 if it is equal to zero the instruction stored in computer's rom is executed.
+	//otherwise restarted and fetch again.
+   
+   ROM32K(address=pc,out=instruction);
+	
+	//CPU has 3 IN pins and 2 OUT pins then 2 are for addresses whether to get from memory or whether to get from pc
+	//also whether it will take input from the memory or from the register? so inM=inM if it's taking
+	//input from memory , instruction=instruction if it's reading from register. This is the instruction which we fetched by its address
+	//stored in PC..and reset=reset because we need to know whether it is 1 or 0 . whether we need to execute the program or restart it.
+	//also it needs to know whether to write to memory or out.
+	//already explained in cpu implementation when to out and when to write to memory.
+	
+    CPU(inM=inM,instruction=instruction,reset=reset,outM=outM,writeM=writeM,addressM=addressM,pc=pc);
+
+    //it has one input pin it will take the value out from the cpu in memory..
+	//and write to memory for which the load signal will be activated load=writeM ..
+	//and when to write to memory already explained in cpu implementation.
+	//it will take the address stored in memory
+	//which will then go to cpu and cpu will choose whether to take it as input or from register.
+	//also by checking reset.
+    
+	Memory(in=outM,load=writeM,address=addressM,out=inM);
+}
+
+
+	
+
+	

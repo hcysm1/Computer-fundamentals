@@ -1,0 +1,15 @@
+
+
+CHIP PC {
+    IN in[16],load,inc,reset;
+    OUT out[16];
+
+    PARTS:
+    // Coding for Program counter:
+	
+	Inc16 (in=previous , out=new);    //it increments the output of the register by 1 
+	Mux16 (a=previous , b=new , sel=inc , out=new1); //mux to choose the previous output or new
+	Mux16 (a=new1 , b=in , sel=load , out=new2); //another mux to tell from where the execution starts using load as a selector
+	Mux16 (a=new2 , b=false , sel=reset , out=new3); //if there are no more tasks to execute reset the counter to zero
+	Register (in=new3 , load=true , out=out, out=previous); //register to hold the output
+}

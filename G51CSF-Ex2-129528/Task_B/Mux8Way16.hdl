@@ -1,0 +1,16 @@
+
+
+CHIP Mux8Way16 {
+    IN a[16], b[16], c[16], d[16],
+       e[16], f[16], g[16], h[16],
+       sel[3];  //using 3 selectors because its 8 way so 2^3=8
+    OUT out[16];
+
+    PARTS:
+    // Coding for Mux8Way16:
+	//using 2 mux4way16 to built mux8way16
+	Mux4Way16(a=a ,b=b , c=c , d=d , sel[0]=sel[0] , sel[1]=sel[1], out=mux4way1); //taking a,b,c,d in to get a single output
+	Mux4Way16(a=e ,b=f , c=g , d=h ,sel[0]=sel[0], sel[1]=sel[1] , out=mux4way2); //taking e,f,g,h in to get a single output
+	Mux16(a=mux4way1 , b=mux4way2 ,sel=sel[2] , out=out); //now choosing whether to select mux4way1 or mux4way2
+
+}

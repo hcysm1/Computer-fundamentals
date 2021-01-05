@@ -1,0 +1,28 @@
+
+
+CHIP RAM64 {
+    IN in[8], load, address[6]; //6 because 2^6=64 so 6 selectors
+    OUT out[8];
+
+    PARTS:
+	// Coding for RAM64
+
+	DMux8Way (in=load ,a=load1 , b=load2 , c=load3 , d=load4 , e=load5 , f=load6 , g=load7 , h=load8 , sel=address[3..5]);
+	//addresses start from least significant bit as it is Ram8 so 2^3=8 so 3 loactions from least significant bit that is [0..2]
+	//using 8 RAM8 to built one RAM64
+	RAM8 (in=in ,address=address[0..2], load=load1 , out=out1);
+	RAM8 (in=in ,address=address[0..2], load=load2 , out=out2);
+	RAM8 (in=in ,address=address[0..2], load=load3 , out=out3);
+	RAM8 (in=in ,address=address[0..2], load=load4 , out=out4);
+	RAM8 (in=in ,address=address[0..2], load=load5 , out=out5);
+	RAM8 (in=in ,address=address[0..2], load=load6 , out=out6);
+	RAM8 (in=in ,address=address[0..2], load=load7 , out=out7);
+	RAM8 (in=in ,address=address[0..2], load=load8 , out=out8);
+	Mux8Way8 (a=out1 , b=out2 , c=out3 , d=out4 , e=out5 , f=out6 , g=out7 , h=out8 ,sel=address[3..5] , out=out); //selection start from
+	                                                                                                               // the most significant
+																												   //bit so as it is 8way 
+																												   //2^3=8 we will use 3 from
+																												   //most significant bits that 
+																												   //is [3..5]
+	
+}

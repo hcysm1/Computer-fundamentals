@@ -1,0 +1,17 @@
+
+
+CHIP DMux4Way {
+    IN in, sel[2]; //using 2 selectors because its 4 way so 2^2=4
+    OUT a, b, c, d;
+
+    PARTS:
+    //Coding for DMux4way:
+	
+	DMux(in=in,sel=sel[1],a=out1,b=out2); // using dmux to get 2 outputs
+	DMux(in=out1,sel=sel[0],a=a,b=b); //taking out1 in to get another 2 outputs
+	DMux(in=out2,sel=sel[0],a=c,b=d); //taking out2 in to get another 2 outputs  (as it is 4way so 4 outputs)
+}
+	
+	
+	
+	

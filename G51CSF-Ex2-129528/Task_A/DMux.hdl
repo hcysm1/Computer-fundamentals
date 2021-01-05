@@ -1,0 +1,15 @@
+
+
+CHIP DMux {
+    IN in, sel;
+    OUT a, b;
+
+    PARTS:
+    // Coding for DMux:
+	
+	
+	Not (in=sel , out=notsel); //inverting output
+	And (a=notsel , b=in , out=a); //getting one output from here
+	And (a=in , b=sel , out=b); //getting another output from here
+	
+}
